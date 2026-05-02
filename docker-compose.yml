@@ -1,0 +1,26 @@
+services:
+  wasal-api:
+    container_name: wasal-api
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - wasal-db
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  wasal-db:
+    container_name: wasal-db
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
