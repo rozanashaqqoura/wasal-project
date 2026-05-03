@@ -4,6 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import appConfig from './infrastructure/config/app.config';
 import databaseConfig from './infrastructure/config/database.config';
 
+
+
 @Module({
   imports: [
     ConfigModule.forRoot({
