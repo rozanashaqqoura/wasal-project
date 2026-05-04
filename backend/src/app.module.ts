@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import appConfig from './infrastructure/config/app.config';
 import databaseConfig from './infrastructure/config/database.config';
+import { UsersModule } from '@modules/users/users.module';
 
 
 
@@ -18,6 +19,7 @@ import databaseConfig from './infrastructure/config/database.config';
         uri: config.get<string>('database.uri'),
       }),
     }),
+    UsersModule,
   ],
 })
 export class AppModule {}

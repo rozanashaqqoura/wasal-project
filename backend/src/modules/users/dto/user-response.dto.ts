@@ -1,0 +1,28 @@
+// src/modules/users/dto/user-response.dto.ts
+import { ApiProperty } from '@nestjs/swagger';
+import { UserRole } from '@modules/users/enums/user-role.enum';
+
+export class UserResponseDto {
+  @ApiProperty()
+  id!: string;
+
+  @ApiProperty()
+  name!: string;
+
+  @ApiProperty()
+  email!: string;
+
+  @ApiProperty()
+  phone!: string;
+
+  @ApiProperty({ enum: UserRole })
+  role!: UserRole;
+
+  @ApiProperty()
+  isActive!: boolean;
+
+  @ApiProperty()
+  createdAt!: Date;
+  @ApiProperty()
+  updatedAt! : Date;
+}
