@@ -5,6 +5,7 @@ import appConfig from './infrastructure/config/app.config';
 import databaseConfig from './infrastructure/config/database.config';
 import { UsersModule } from '@modules/users/users.module';
 import { AuthModule } from '@modules/auth/auth.module';
+import { DonationsModule } from '@modules/donations/donations.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthModule } from '@modules/auth/auth.module';
     }),
     UsersModule,
     AuthModule,
+    DonationsModule,
   ],
 })
 export class AppModule {}

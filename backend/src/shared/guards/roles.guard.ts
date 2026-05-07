@@ -11,6 +11,7 @@ import { UserRole } from '@modules/users/enums/user-role.enum';
 import { Request } from 'express';
 import { ROLES_KEY } from '@shared/decorators/roles.decorator';
 import { UserDocument } from '@modules/users/schemas/user.schema';
+import { IS_PUBLIC_KEY } from '@shared/decorators/public.decorator';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -36,6 +37,15 @@ export class RolesGuard implements CanActivate {
     const hasRole = requiredRoles.includes(user.role);
     if (!hasRole) {
       throw new ForbiddenException(AuthMessages.FORBIDDEN);
+    }
+
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) {
+      return true;
     }
 
     return true;
