@@ -1,15 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
-import {
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from '@modules/users/users.service';
 import { CreateUserDto } from '@modules/users/dto/create-user-request.dto';
@@ -17,9 +7,7 @@ import { CreateUserDto } from '@modules/users/dto/create-user-request.dto';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new user' })

@@ -42,6 +42,7 @@ export class UsersService {
         email,
         isActive: true,
       })
+      .select('+password')
       .exec();
   }
 
