@@ -1,35 +1,58 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-
+// src/modules/users/users.controller.ts
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '@modules/users/users.service';
-import { CreateUserDto } from '@modules/users/dto/create-user-request.dto';
+import { UpdateUserDto } from '@modules/users/dto/update-user.dto';
+import { JwtAuthGuard } from '@shared/guards/jwt-auth.guard';
+import { RolesGuard } from '@shared/guards/roles.guard';
+import { Roles } from '@shared/decorators/roles.decorator';
+import { ParseObjectIdPipe } from '@shared/pipes/parse-object-id.pipe';
+import { UserRole } from '@modules/users/enums/user-role.enum';
 
 @ApiTags('users')
 @Controller('users')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.ADMIN)
+@ApiBearerAuth()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Create a new user' })
-  async create(@Body() dto: CreateUserDto) {
-    return this.usersService.create(dto);
+  // Admin يشوف كل الأسر
+  @Get('beneficiaries')
+  @ApiOperation({ summary: 'Get all beneficiary families' })
+  findAllBeneficiaries() {
+    return this.usersService.findAllBeneficiaries();
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Get all users' })
-  async findAll() {
-    return this.usersService.findAll();
-  }
-
+  // Admin يشوف أسرة معينة
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
-  async findById(@Param('id') id: string) {
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.usersService.findById(id);
   }
 
-  @Patch(':id/deactivate')
+  // Admin يعدل بيانات أسرة
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update user or family info' })
+  update(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() dto: UpdateUserDto,
+  ) {
+    return this.usersService.update(id, dto);
+  }
+
+  // Admin يعطل حساب أسرة
+  @Delete(':id')
   @ApiOperation({ summary: 'Deactivate user' })
-  async deactivate(@Param('id') id: string) {
+  deactivate(@Param('id', ParseObjectIdPipe) id: string) {
     return this.usersService.deactivate(id);
   }
 }
