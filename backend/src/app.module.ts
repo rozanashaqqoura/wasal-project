@@ -6,6 +6,8 @@ import databaseConfig from './infrastructure/config/database.config';
 import { UsersModule } from '@modules/users/users.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { DonationsModule } from '@modules/donations/donations.module';
+import { NotificationsModule } from '@modules/notifications/notifications.module';
+import { CouponsModule } from '@modules/coupons/coupons.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { DonationsModule } from '@modules/donations/donations.module';
     UsersModule,
     AuthModule,
     DonationsModule,
+    NotificationsModule,
+    CouponsModule,
   ],
 })
 export class AppModule {}
