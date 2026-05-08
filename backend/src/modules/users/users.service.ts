@@ -6,15 +6,15 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-
 import { User, UserDocument } from '@modules/users/schemas/user.schema';
 import { CreateUserDto } from '@modules/users/dto/create-user-request.dto';
+import { UpdateUserDto } from '@modules/users/dto/update-user.dto';
+import { UserRole } from '@modules/users/enums/user-role.enum';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name)
-    private readonly userModel: Model<UserDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
   async create(dto: CreateUserDto): Promise<UserDocument> {
@@ -80,5 +80,20 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async update(id: string, dto: Partial<UpdateUserDto>): Promise<UserDocument> {
+    const user = await this.userModel
+      .findOneAndUpdate({ _id: id, isActive: true }, { ...dto }, { new: true })
+      .exec();
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
+  async findAllBeneficiaries(): Promise<UserDocument[]> {
+    return this.userModel
+      .find({ role: UserRole.BENEFICIARY, isActive: true })
+      .sort({ createdAt: -1 })
+      .exec();
   }
 }

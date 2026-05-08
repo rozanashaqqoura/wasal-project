@@ -4,10 +4,12 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '@modules/users/users.service';
 import { LoginDto } from '@modules/auth/dto/login.dto';
+import { RegisterDto } from '@modules/auth/dto/register.dto';
 import { AuthResponseDto } from '@modules/auth/dto/auth-response.dto';
 import { AuthMessages } from '@modules/auth/enums/auth-messages.enum';
 import { JwtPayload } from '@modules/auth/interfaces/jwt-payload.interface';
 import { UserDocument } from '@modules/users/schemas/user.schema';
+import { UserRole } from '@modules/users/enums/user-role.enum';
 
 @Injectable()
 export class AuthService {
@@ -16,15 +18,36 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  // الأسرة تسجل لأول مرة
+  // role دايماً beneficiary — الأسرة ما تقدر تسجل كـ admin
+  async register(dto: RegisterDto): Promise<AuthResponseDto> {
+    const user = await this.usersService.create({
+      ...dto,
+      role: UserRole.BENEFICIARY,
+    });
+
+    const payload: JwtPayload = {
+      sub: user._id.toString(),
+      email: user.email,
+      role: user.role,
+    };
+
+    return {
+      accessToken: this.jwtService.sign(payload),
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+  }
+
   async login(dto: LoginDto): Promise<AuthResponseDto> {
     const user = await this.usersService.findByEmail(dto.email);
-
     if (!user) {
       throw new UnauthorizedException(AuthMessages.INVALID_CREDENTIALS);
     }
 
     const isPasswordValid = await bcrypt.compare(dto.password, user.password);
-
     if (!isPasswordValid) {
       throw new UnauthorizedException(AuthMessages.INVALID_CREDENTIALS);
     }
@@ -35,10 +58,8 @@ export class AuthService {
       role: user.role,
     };
 
-    const accessToken = this.jwtService.sign(payload);
-
     return {
-      accessToken,
+      accessToken: this.jwtService.sign(payload),
       id: user._id.toString(),
       name: user.name,
       email: user.email,
