@@ -3,8 +3,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import appConfig from './infrastructure/config/app.config';
 import databaseConfig from './infrastructure/config/database.config';
-
-
+import { UsersModule } from '@modules/users/users.module';
+import { AuthModule } from '@modules/auth/auth.module';
+import { DonationsModule } from '@modules/donations/donations.module';
+import { NotificationsModule } from '@modules/notifications/notifications.module';
+import { CouponsModule } from '@modules/coupons/coupons.module';
 
 @Module({
   imports: [
@@ -18,6 +21,11 @@ import databaseConfig from './infrastructure/config/database.config';
         uri: config.get<string>('database.uri'),
       }),
     }),
+    UsersModule,
+    AuthModule,
+    DonationsModule,
+    NotificationsModule,
+    CouponsModule,
   ],
 })
 export class AppModule {}
