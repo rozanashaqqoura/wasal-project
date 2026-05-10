@@ -36,4 +36,4 @@ export class Coupon {
 
 export const CouponSchema = SchemaFactory.createForClass(Coupon);
 
-CouponSchema.index({ beneficiary: 1, month: 1 }, { unique: true });
+CouponSchema.index({ user: 1, month: 1 }, { unique: true });
