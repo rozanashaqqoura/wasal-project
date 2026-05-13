@@ -1,20 +1,17 @@
 services:
-  wasal-api:
+  api:
     container_name: wasal-api
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./backend
     ports:
       - "3000:3000"
-    env_file:
-      - ./backend/.env
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/wasal
+      - JWT_SECRET=wasal_super_secret_key
+      - JWT_EXPIRES_IN=7d
     depends_on:
-      - wasal-db
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - mongo
 
-  wasal-db:
+  mongo:
     container_name: wasal-db
     image: mongo:7
     ports:

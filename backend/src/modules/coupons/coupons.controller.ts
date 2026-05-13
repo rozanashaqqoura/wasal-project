@@ -49,7 +49,7 @@ export class CouponsController {
 
   // الأسرة تسكن الـ QR عند الاستلام
   @Post('redeem')
-  @Roles(UserRole.BENEFICIARY)
+  @Roles(UserRole.ADMIN, UserRole.BENEFICIARY)
   @ApiOperation({ summary: 'Redeem a coupon by QR token' })
   redeem(@Body() dto: RedeemCouponDto) {
     return this.couponsService.redeemCoupon(dto);
